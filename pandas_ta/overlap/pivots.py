@@ -2,8 +2,8 @@
 from numpy import greater, nan, zeros_like
 from numba import njit
 from pandas import DataFrame, DateOffset, Series, infer_freq
-from pandas_ta._typing import DictLike
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike
+from pandas_ta_tnt.utils import (
     nb_non_zero_range,
     v_datetime_ordered,
     v_series,

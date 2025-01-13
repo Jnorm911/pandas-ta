@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from numpy import isnan, nan
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.ma import ma
-from pandas_ta.maps import Imports
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.ma import ma
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.utils import (
     v_bool,
     v_drift,
     v_mamode,
@@ -15,7 +15,7 @@ from pandas_ta.utils import (
     v_talib,
     zero
 )
-from pandas_ta.volatility import atr
+from pandas_ta_tnt.volatility import atr
 
 
 

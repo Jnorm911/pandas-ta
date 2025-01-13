@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from pandas import Series
-from pandas_ta.overlap import sma
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.utils import high_low_range, is_percent
-from pandas_ta.utils import real_body, v_offset, v_pos_default
-from pandas_ta.utils import v_scalar, v_series
+from pandas_ta_tnt.overlap import sma
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.utils import high_low_range, is_percent
+from pandas_ta_tnt.utils import real_body, v_offset, v_pos_default
+from pandas_ta_tnt.utils import v_scalar, v_series
 
 
 

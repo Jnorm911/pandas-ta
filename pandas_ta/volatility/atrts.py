@@ -2,10 +2,10 @@
 from numpy import isnan, nan, uintc, zeros_like
 from numba import njit
 from pandas import Series
-from pandas_ta._typing import Array, DictLike, Int, IntFloat
-from pandas_ta.ma import ma as _ma
-from pandas_ta.maps import Imports
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import Array, DictLike, Int, IntFloat
+from pandas_ta_tnt.ma import ma as _ma
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.utils import (
     v_drift,
     v_mamode,
     v_offset,
@@ -13,7 +13,7 @@ from pandas_ta.utils import (
     v_series,
     v_talib
 )
-from pandas_ta.volatility import atr
+from pandas_ta_tnt.volatility import atr
 
 
 

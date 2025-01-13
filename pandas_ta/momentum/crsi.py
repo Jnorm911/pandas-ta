@@ -10,10 +10,10 @@ from numpy import (
 )
 from numpy.lib.stride_tricks import sliding_window_view
 from pandas import Series
-from pandas_ta._typing import Array, DictLike, Int, IntFloat
-from pandas_ta.maps import Imports
-from pandas_ta.momentum.rsi import rsi
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import Array, DictLike, Int, IntFloat
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.momentum.rsi import rsi
+from pandas_ta_tnt.utils import (
     v_drift,
     v_offset,
     v_pos_default,

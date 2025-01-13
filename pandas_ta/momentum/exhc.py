@@ -14,8 +14,8 @@ from numpy import (
 )
 from numba import njit
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.utils import (
     nb_ffill,
     nb_idiff,
     nb_shift,

@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 from pandas import Series
-from pandas_ta._typing import DictLike
-from pandas_ta.overlap.dema import dema
-from pandas_ta.overlap.ema import ema
-from pandas_ta.overlap.fwma import fwma
-from pandas_ta.overlap.hma import hma
-from pandas_ta.overlap.linreg import linreg
-from pandas_ta.overlap.midpoint import midpoint
-from pandas_ta.overlap.pwma import pwma
-from pandas_ta.overlap.rma import rma
-from pandas_ta.overlap.sinwma import sinwma
-from pandas_ta.overlap.sma import sma
-from pandas_ta.overlap.ssf import ssf
-from pandas_ta.overlap.swma import swma
-from pandas_ta.overlap.t3 import t3
-from pandas_ta.overlap.tema import tema
-from pandas_ta.overlap.trima import trima
-from pandas_ta.overlap.vidya import vidya
-from pandas_ta.overlap.wma import wma
+from pandas_ta_tnt._typing import DictLike
+from pandas_ta_tnt.overlap.dema import dema
+from pandas_ta_tnt.overlap.ema import ema
+from pandas_ta_tnt.overlap.fwma import fwma
+from pandas_ta_tnt.overlap.hma import hma
+from pandas_ta_tnt.overlap.linreg import linreg
+from pandas_ta_tnt.overlap.midpoint import midpoint
+from pandas_ta_tnt.overlap.pwma import pwma
+from pandas_ta_tnt.overlap.rma import rma
+from pandas_ta_tnt.overlap.sinwma import sinwma
+from pandas_ta_tnt.overlap.sma import sma
+from pandas_ta_tnt.overlap.ssf import ssf
+from pandas_ta_tnt.overlap.swma import swma
+from pandas_ta_tnt.overlap.t3 import t3
+from pandas_ta_tnt.overlap.tema import tema
+from pandas_ta_tnt.overlap.trima import trima
+from pandas_ta_tnt.overlap.vidya import vidya
+from pandas_ta_tnt.overlap.wma import wma
 
 
 

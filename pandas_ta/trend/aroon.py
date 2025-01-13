@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.maps import Imports
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.utils import (
     recent_maximum_index,
     recent_minimum_index,
     v_offset,

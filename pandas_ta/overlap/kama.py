@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from numpy import nan
 from pandas import Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.ma import ma
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.ma import ma
+from pandas_ta_tnt.utils import (
     non_zero_range,
     v_drift,
     v_mamode,

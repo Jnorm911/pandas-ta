@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from numpy import arange, array, polyfit, std
 from pandas import DataFrame, DatetimeIndex, Series
-from pandas_ta._typing import DictLike, Int, List
-from pandas_ta.utils import v_list, v_lowerbound, v_offset, v_series
+from pandas_ta_tnt._typing import DictLike, Int, List
+from pandas_ta_tnt.utils import v_list, v_lowerbound, v_offset, v_series
 
 
 

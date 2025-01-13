@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from numba import njit
 from pandas import Series
-from pandas_ta._typing import Array, DictLike, Int, IntFloat
-from pandas_ta.maps import Imports
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import Array, DictLike, Int, IntFloat
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.utils import (
     nb_idiff,
     nb_shift,
     v_offset,

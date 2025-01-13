@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from numpy import nan
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.overlap import ema
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.overlap import ema
+from pandas_ta_tnt.utils import (
     non_zero_range,
     v_offset,
     v_pos_default,

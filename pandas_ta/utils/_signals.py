@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.utils._validate import v_offset, v_series
-from pandas_ta.utils._math import zero
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.utils._validate import v_offset, v_series
+from pandas_ta_tnt.utils._math import zero
 
 __all__ = [
     "above",

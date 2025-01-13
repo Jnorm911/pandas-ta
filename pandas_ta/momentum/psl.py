@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from numpy import sign
 from pandas import Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.utils import (
     nb_idiff,
     v_drift,
     v_offset,

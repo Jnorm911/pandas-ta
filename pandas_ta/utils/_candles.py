@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from pandas import Series
-from pandas_ta.utils._core import non_zero_range
+from pandas_ta_tnt.utils._core import non_zero_range
 
 __all__ = ["candle_color", "high_low_range", "real_body"]
 

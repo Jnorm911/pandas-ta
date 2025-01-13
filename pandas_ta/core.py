@@ -11,8 +11,8 @@ from pandas.errors import PerformanceWarning
 from pandas import DataFrame, Series
 from pandas import options as pd_options
 
-from pandas_ta._typing import *
-from pandas_ta import *
+from pandas_ta_tnt._typing import *
+from pandas_ta_tnt import *
 
 if Imports["dotenv"]:
     from dotenv import load_dotenv
@@ -512,7 +512,7 @@ class AnalysisIndicators(object):
 
         s, _count = f"{header}\n", 0
         if indicator_count > 0:
-            from pandas_ta.candles.cdl_pattern import ALL_PATTERNS
+            from pandas_ta_tnt.candles.cdl_pattern import ALL_PATTERNS
             s += f"\nIndicators and Utilities [{indicator_count}]:\n    {', '.join(ta_indicators)}\n"
             _count += indicator_count
             if Imports["talib"]:

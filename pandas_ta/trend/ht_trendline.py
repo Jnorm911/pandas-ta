@@ -2,9 +2,9 @@
 from numpy import arctan, copy, isnan, nan, rad2deg, zeros_like, zeros
 from numba import njit
 from pandas import Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.maps import Imports
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.utils import (
     v_bool,
     v_offset,
     v_pos_default,

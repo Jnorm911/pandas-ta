@@ -2,9 +2,9 @@
 from numpy import convolve, ones
 from numba import njit
 from pandas import Series
-from pandas_ta._typing import Array, DictLike, Int
-from pandas_ta.maps import Imports
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import Array, DictLike, Int
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.utils import (
     nb_prepend,
     v_offset,
     v_pos_default,

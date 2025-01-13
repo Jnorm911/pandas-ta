@@ -3,8 +3,8 @@ from warnings import simplefilter
 
 from numpy import array_split, mean, sum
 from pandas import cut, concat, DataFrame, Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.utils import signed_series, v_bool, v_pos_default, v_series
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.utils import signed_series, v_bool, v_pos_default, v_series
 
 
 

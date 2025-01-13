@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from numpy import array, inf, log, nan, pi, sqrt
-from pandas_ta._typing import Array, IntFloat, Number, Union
-from pandas_ta.maps import Imports
-from pandas_ta.utils import hpoly
+from pandas_ta_tnt._typing import Array, IntFloat, Number, Union
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.utils import hpoly
 
 __all__ = ["inv_norm"]
 

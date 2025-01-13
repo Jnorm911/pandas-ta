@@ -2,10 +2,10 @@
 from sys import float_info as sflt
 from numpy import convolve, maximum, nan, ones, roll, where
 from pandas import Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.maps import Imports
-from pandas_ta.overlap import hlc3
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.overlap import hlc3
+from pandas_ta_tnt.utils import (
     nb_non_zero_range,
     v_drift,
     v_offset,

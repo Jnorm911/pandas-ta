@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from numpy import isnan
 from pandas import Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.ma import ma
-from pandas_ta.statistics import stdev
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.ma import ma
+from pandas_ta_tnt.statistics import stdev
+from pandas_ta_tnt.utils import (
     unsigned_differences,
     v_bool,
     v_drift,

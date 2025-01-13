@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from warnings import simplefilter
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int, List
-from pandas_ta.overlap import hlc3
-from pandas_ta.utils import v_datetime_ordered, v_list, v_offset, v_series
+from pandas_ta_tnt._typing import DictLike, Int, List
+from pandas_ta_tnt.overlap import hlc3
+from pandas_ta_tnt.utils import v_datetime_ordered, v_list, v_offset, v_series
 
 
 

@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 from numpy import isnan
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.utils import (
     v_mamode,
     v_offset,
     v_pos_default,
     v_series,
     v_tradingview
 )
-from pandas_ta.volatility import atr
+from pandas_ta_tnt.volatility import atr
 
 
 

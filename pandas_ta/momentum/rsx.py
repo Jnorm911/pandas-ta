@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from numpy import nan
-from pandas_ta._typing import DictLike, Int
+from pandas_ta_tnt._typing import DictLike, Int
 from pandas import concat, DataFrame, Series
-from pandas_ta.utils import (
+from pandas_ta_tnt.utils import (
     signals,
     v_drift,
     v_offset,

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from pandas import Series, DataFrame
-from pandas_ta._typing import DictLike, Int, IntFloat, List, Union
-from pandas_ta.maps import Imports
-from pandas_ta.utils import v_offset, v_scalar, v_series
-from pandas_ta.candles import cdl_doji, cdl_inside
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat, List, Union
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.utils import v_offset, v_scalar, v_series
+from pandas_ta_tnt.candles import cdl_doji, cdl_inside
 
 
 

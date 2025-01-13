@@ -123,7 +123,7 @@ env/**
 .zed/**
 
 # Original Source (Dev)
-pandas_ta/_wrapper.py
+pandas_ta_tnt/_wrapper.py
 
 # twopirllc stuff
 setup.cfg

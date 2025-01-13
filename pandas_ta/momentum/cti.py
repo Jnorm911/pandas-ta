@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from pandas import Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.overlap import linreg
-from pandas_ta.utils import v_offset, v_pos_default, v_series
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.overlap import linreg
+from pandas_ta_tnt.utils import v_offset, v_pos_default, v_series
 
 
 

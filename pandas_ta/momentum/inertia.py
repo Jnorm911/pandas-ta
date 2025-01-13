@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from numpy import isnan
 from pandas import Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.overlap import linreg
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.overlap import linreg
+from pandas_ta_tnt.utils import (
     v_bool,
     v_drift,
     v_mamode,
@@ -12,7 +12,7 @@ from pandas_ta.utils import (
     v_scalar,
     v_series
 )
-from pandas_ta.volatility import rvi
+from pandas_ta_tnt.volatility import rvi
 
 
 

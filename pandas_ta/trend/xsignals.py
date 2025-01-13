@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from numpy import nan
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int, IntFloat, Union
-from pandas_ta.trend import tsignals
-from pandas_ta.utils import cross_value, v_offset, v_series
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat, Union
+from pandas_ta_tnt.trend import tsignals
+from pandas_ta_tnt.utils import cross_value, v_offset, v_series
 
 
 

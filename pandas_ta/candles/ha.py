@@ -2,8 +2,8 @@
 from numpy import empty_like, maximum, minimum
 from numba import njit
 from pandas import DataFrame, Series
-from pandas_ta._typing import Array, DictLike, Int
-from pandas_ta.utils import v_offset, v_series
+from pandas_ta_tnt._typing import Array, DictLike, Int
+from pandas_ta_tnt.utils import v_offset, v_series
 
 
 

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from numpy import nan
 from pandas import Series
-from pandas_ta._typing import Int
-from pandas_ta.utils import v_drift, v_series
+from pandas_ta_tnt._typing import Int
+from pandas_ta_tnt.utils import v_drift, v_series
 
 
 

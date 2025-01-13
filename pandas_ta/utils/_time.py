@@ -3,8 +3,8 @@ from datetime import datetime
 from time import localtime, perf_counter
 
 from pandas import DataFrame, Series, Timestamp, to_datetime
-from pandas_ta._typing import Float, MaybeSeriesFrame, Optional, Tuple, Union
-from pandas_ta.maps import EXCHANGE_TZ
+from pandas_ta_tnt._typing import Float, MaybeSeriesFrame, Optional, Tuple, Union
+from pandas_ta_tnt.maps import EXCHANGE_TZ
 
 __all__ = [
     "df_dates",

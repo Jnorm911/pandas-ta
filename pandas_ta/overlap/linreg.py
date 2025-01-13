@@ -3,9 +3,9 @@ from sys import float_info as sflt
 from numpy import arctan, nan, pi, zeros_like
 from numpy.version import version as np_version
 from pandas import Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.maps import Imports
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.utils import (
     strided_window,
     v_offset,
     v_pos_default,

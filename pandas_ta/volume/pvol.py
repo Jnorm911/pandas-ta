@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pandas import Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.utils import signed_series, v_bool, v_offset, v_series
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.utils import signed_series, v_bool, v_offset, v_series
 
 
 

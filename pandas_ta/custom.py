@@ -6,23 +6,23 @@ import types
 from glob import glob
 from os.path import abspath, basename, exists, join, splitext
 
-import pandas_ta
-from pandas_ta._typing import DictLike
+import pandas_ta_tnt
+from pandas_ta_tnt._typing import DictLike
 
 
 
 def bind(name: str, f: types.FunctionType, method: types.MethodType = None):
     """
     Helper function to bind the function and class method defined in a custom
-    indicator module to the active pandas_ta instance.
+    indicator module to the active pandas_ta_tnt instance.
 
     Args:
-        function_name (str): The name of the indicator within pandas_ta
+        function_name (str): The name of the indicator within pandas_ta_tnt
         function (fcn): The indicator function
         method (fcn): The class method corresponding to the passed function
     """
-    setattr(pandas_ta, name, f)
-    setattr(pandas_ta.AnalysisIndicators, name, method)
+    setattr(pandas_ta_tnt, name, f)
+    setattr(pandas_ta_tnt.AnalysisIndicators, name, method)
 
 
 def create_dir(path: str, create_categories: bool = True, verbose: bool = True):
@@ -48,7 +48,7 @@ def create_dir(path: str, create_categories: bool = True, verbose: bool = True):
 
     # optionally add any missing category subdirectories
     if create_categories:
-        for sd in [*pandas_ta.Category]:
+        for sd in [*pandas_ta_tnt.Category]:
             d = abspath(join(path, sd))
             if not exists(d):
                 os.makedirs(d)
@@ -83,7 +83,7 @@ def get_module_functions(module: types.ModuleType) -> DictLike:
 
 def import_dir(path: str, verbose: bool = True):
     """
-    Import a directory of custom indicators into pandas_ta
+    Import a directory of custom indicators into pandas_ta_tnt
 
     Args:
         path (str): Full path to your indicator tree
@@ -91,10 +91,10 @@ def import_dir(path: str, verbose: bool = True):
 
     This method allows you to experiment and develop your own technical
     analysis indicators in a separate local directory of your choice but
-    use them seamlessly together with the existing pandas_ta functions just
-    like if they were part of pandas_ta.
+    use them seamlessly together with the existing pandas_ta_tnt functions just
+    like if they were part of pandas_ta_tnt.
 
-    If you at some late point would like to push them into the pandas_ta
+    If you at some late point would like to push them into the pandas_ta_tnt
     library you can do so very easily by following the step by step
     instruction here https://github.com/twopirllc/pandas-ta/issues/355.
 
@@ -102,20 +102,20 @@ def import_dir(path: str, verbose: bool = True):
 
     1. Loading the 'ta' module:
     >>> import pandas as pd
-    >>> import pandas_ta as ta
+    >>> import pandas_ta_tnt as ta
 
     2. Create an empty directory on your machine where you want to work with
-    your indicators. Invoke pandas_ta.custom.import_dir once to pre-populate
+    your indicators. Invoke pandas_ta_tnt.custom.import_dir once to pre-populate
     it with sub-folders for all available indicator categories, e.g.:
 
     >>> import os
     >>> from os.path import abspath, join, expanduser
-    >>> from pandas_ta.custom import create_dir, import_dir
+    >>> from pandas_ta_tnt.custom import create_dir, import_dir
     >>> ta_dir = abspath(join(expanduser("~"), "my_indicators"))
     >>> create_dir(ta_dir)
 
     3. You can now create your own custom indicator e.g. by copying existing
-    ones from pandas_ta core module and modifying them.
+    ones from pandas_ta_tnt core module and modifying them.
 
     IMPORTANT: Each custom indicator should have a unique name and have both
     a) a function named exactly as the module, e.g. 'ni' if the module is ni.py
@@ -123,7 +123,7 @@ def import_dir(path: str, verbose: bool = True):
     ending with '_method'. E.g. 'ni_method'
 
     In essence these modules should look exactly like the standard indicators
-    available in categories under the pandas_ta-folder. The only difference
+    available in categories under the pandas_ta_tnt-folder. The only difference
     will be an addition of a matching class method.
 
     For an example of the correct structure, look at the example ni.py in the
@@ -148,7 +148,7 @@ def import_dir(path: str, verbose: bool = True):
     >>> import_dir(ta_dir)
 
     If your custom indicator(s) loaded successfully then it should behave exactly
-    like all other native indicators in pandas_ta, including help functions.
+    like all other native indicators in pandas_ta_tnt, including help functions.
     """
     # ensure that the passed directory exists / is readable
     if not exists(path):
@@ -162,11 +162,11 @@ def import_dir(path: str, verbose: bool = True):
     for d in dirs:
         dirname = basename(d)
 
-        # only look in directories which are valid pandas_ta categories
-        if dirname not in [*pandas_ta.Category]:
+        # only look in directories which are valid pandas_ta_tnt categories
+        if dirname not in [*pandas_ta_tnt.Category]:
             if verbose and dirname not in ["__pycache__", "__init__.py"]:
                 print(
-                    f"[i] Skipping the sub-directory '{dirname}' since it's not a valid pandas_ta category."
+                    f"[i] Skipping the sub-directory '{dirname}' since it's not a valid pandas_ta_tnt category."
                 )
             continue
 
@@ -181,7 +181,7 @@ def import_dir(path: str, verbose: bool = True):
                 # (re)load the indicator module
                 module_functions = load_indicator_module(module_name)
 
-                # figure out which of the modules functions to bind to pandas_ta
+                # figure out which of the modules functions to bind to pandas_ta_tnt
                 _callable = module_functions.get(module_name, None)
                 _method_callable = module_functions.get(f"{module_name}_method", None)
 
@@ -198,8 +198,8 @@ def import_dir(path: str, verbose: bool = True):
                     continue
 
                 # add it to the correct category if it's not there yet
-                if module_name not in pandas_ta.Category[dirname]:
-                    pandas_ta.Category[dirname].append(module_name)
+                if module_name not in pandas_ta_tnt.Category[dirname]:
+                    pandas_ta_tnt.Category[dirname].append(module_name)
 
                 bind(module_name, _callable, _method_callable)
                 if verbose:

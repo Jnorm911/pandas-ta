@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from numpy import isnan, nan
 from pandas import Series, DataFrame
-from pandas_ta.volatility import atr
-from pandas_ta._typing import Int, IntFloat, DictLike
-from pandas_ta.utils import (
+from pandas_ta_tnt.volatility import atr
+from pandas_ta_tnt._typing import Int, IntFloat, DictLike
+from pandas_ta_tnt.utils import (
     v_bool,
     v_drift,
     v_mamode,

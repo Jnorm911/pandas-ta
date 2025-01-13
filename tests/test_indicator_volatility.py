@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pandas.testing as pdt
-import pandas_ta as ta
+import pandas_ta_tnt as ta
 import talib as tal
 
 from pandas import DataFrame, Series

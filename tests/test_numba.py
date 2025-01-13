@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import pandas_ta as ta
+import pandas_ta_tnt as ta
 
 from pytest import mark
 

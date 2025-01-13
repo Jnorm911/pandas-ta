@@ -15,7 +15,7 @@ from numpy import (
 )
 from numba import njit
 
-from pandas_ta._typing import Array, Int, IntFloat
+from pandas_ta_tnt._typing import Array, Int, IntFloat
 
 __all__ = [
     "nb_ffill",

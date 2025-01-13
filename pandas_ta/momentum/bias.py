@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from pandas import Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.ma import ma
-from pandas_ta.utils import v_mamode, v_offset, v_pos_default, v_series
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.ma import ma
+from pandas_ta_tnt.utils import v_mamode, v_offset, v_pos_default, v_series
 
 
 

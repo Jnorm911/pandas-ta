@@ -2,7 +2,7 @@
 import numpy as np
 import pandas.testing as pdt
 import talib as tal
-import pandas_ta as ta
+import pandas_ta_tnt as ta
 
 from pandas import DataFrame, Series, read_csv
 

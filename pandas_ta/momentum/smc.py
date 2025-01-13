@@ -2,9 +2,9 @@
 from sys import float_info as sflt
 from numpy import isnan, maximum, minimum, nan
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.ma import ma
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.ma import ma
+from pandas_ta_tnt.utils import (
     v_bool,
     v_mamode,
     v_offset,

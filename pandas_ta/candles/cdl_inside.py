@@ -2,8 +2,8 @@
 from numpy import roll, where
 from numba import njit
 from pandas import Series
-from pandas_ta._typing import Array, DictLike, Int, IntFloat
-from pandas_ta.utils import v_bool, v_offset, v_offset, v_scalar, v_series
+from pandas_ta_tnt._typing import Array, DictLike, Int, IntFloat
+from pandas_ta_tnt.utils import v_bool, v_offset, v_offset, v_scalar, v_series
 
 
 

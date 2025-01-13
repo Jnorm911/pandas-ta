@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from numpy import isnan, log, nan
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.overlap import hl2
-from pandas_ta.utils import high_low_range, v_offset, v_pos_default, v_series
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.overlap import hl2
+from pandas_ta_tnt.utils import high_low_range, v_offset, v_pos_default, v_series
 
 
 

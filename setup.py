@@ -43,7 +43,7 @@ setup(
         "Topic :: Scientific/Engineering :: Information Analysis",
     ],
     package_data={
-        "pandas_ta": ["py.typed"],
+        "pandas_ta_tnt": ["py.typed"],
         "data": ["data/*.csv"],
     },
     install_requires=[

@@ -9,7 +9,7 @@ assignees: twopirllc
 
 **Which version are you running? The lastest version is on Github. Pip is for major releases.**
 ```python
-import pandas_ta as ta
+import pandas_ta_tnt as ta
 print(ta.version)
 ```
 

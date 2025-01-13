@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # from numpy.version import version as np_version
 from pandas import Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.utils import (
     pascals_triangle,
     v_offset,
     v_ascending,

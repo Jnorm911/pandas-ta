@@ -11,7 +11,7 @@ from numpy import (
 )
 from pandas import DataFrame, Series
 from numba import njit
-from pandas_ta._typing import (
+from pandas_ta_tnt._typing import (
     Array,
     DictLike,
     Float,
@@ -20,8 +20,8 @@ from pandas_ta._typing import (
     List,
     Optional
 )
-from pandas_ta.maps import Imports
-from pandas_ta.utils._validate import v_series
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.utils._validate import v_series
 
 __all__ = [
     "combination",

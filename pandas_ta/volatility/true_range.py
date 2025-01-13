@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from numpy import isnan, nan
 from pandas import concat, Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.maps import Imports
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.utils import (
     non_zero_range,
     v_bool,
     v_drift,

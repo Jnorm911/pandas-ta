@@ -2,8 +2,8 @@
 from multiprocessing import cpu_count
 from dataclasses import dataclass, field
 
-from pandas_ta._typing import Int, List
-from pandas_ta.utils._time import get_time
+from pandas_ta_tnt._typing import Int, List
+from pandas_ta_tnt.utils._time import get_time
 
 __all__ = [
     "Study",

@@ -2,7 +2,7 @@
 from functools import partial
 from pandas import DataFrame, Series
 from pandas.api.types import is_datetime64_any_dtype
-from pandas_ta._typing import (
+from pandas_ta_tnt._typing import (
     Float,
     Int,
     IntFloat,

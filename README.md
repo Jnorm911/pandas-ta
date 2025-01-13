@@ -6,10 +6,10 @@
 ### A Comprehensive Python Technical Analysis Library for Traders and Investors
 
 [![license](https://img.shields.io/github/license/twopirllc/pandas-ta)](#license)
-[![Python Version](https://img.shields.io/pypi/pyversions/pandas-ta?style=flat)](https://pypi.org/project/pandas_ta/)
-[![PyPi Version](https://img.shields.io/pypi/v/pandas-ta?style=flat)](https://pypi.org/project/pandas_ta/)
-[![Package Status](https://img.shields.io/pypi/status/pandas-ta?style=flat)](https://pypi.org/project/pandas_ta/)
-[![Downloads](https://img.shields.io/pypi/dm/pandas_ta?style=flat)](https://pypistats.org/packages/pandas_ta)
+[![Python Version](https://img.shields.io/pypi/pyversions/pandas-ta?style=flat)](https://pypi.org/project/pandas_ta_tnt/)
+[![PyPi Version](https://img.shields.io/pypi/v/pandas-ta?style=flat)](https://pypi.org/project/pandas_ta_tnt/)
+[![Package Status](https://img.shields.io/pypi/status/pandas-ta?style=flat)](https://pypi.org/project/pandas_ta_tnt/)
+[![Downloads](https://img.shields.io/pypi/dm/pandas_ta_tnt?style=flat)](https://pypistats.org/packages/pandas_ta_tnt)
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/pandas-ta.svg?label=Conda%20downloads)](https://anaconda.org/conda-forge/pandas-ta)
 [![Stars](https://img.shields.io/github/stars/twopirllc/pandas-ta?style=flat)](#stars)
 [![Forks](https://img.shields.io/github/forks/twopirllc/pandas-ta?style=flat)](#forks)

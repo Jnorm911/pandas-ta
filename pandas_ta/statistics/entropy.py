@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from numpy import log
 from pandas import Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.utils import v_offset, v_pos_default, v_series
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.utils import v_offset, v_pos_default, v_series
 
 
 

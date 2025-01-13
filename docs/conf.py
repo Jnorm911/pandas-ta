@@ -8,8 +8,8 @@ from sys import path as sys_path
 import sphinx_press_theme
 import sphinx.ext.autodoc
 
-sys_path.insert(0, os_path.abspath("../pandas_ta/"))
-# sys_path.append(os_path.abspath("../pandas_ta/"))
+sys_path.insert(0, os_path.abspath("../pandas_ta_tnt/"))
+# sys_path.append(os_path.abspath("../pandas_ta_tnt/"))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -22,7 +22,7 @@ release = "beta"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-# autodoc_mock_imports = ["pandas_ta"]
+# autodoc_mock_imports = ["pandas_ta_tnt"]
 
 root_doc = "index"
 source_suffix = [".rst", ".md"]
@@ -59,4 +59,4 @@ html_static_path = ["_static"]
 napoleon_google_docstring = True
 
 autoapi_type = "python"
-autoapi_dirs = "../pandas_ta"
+autoapi_dirs = "../pandas_ta_tnt"

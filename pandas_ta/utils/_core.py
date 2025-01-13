@@ -9,9 +9,9 @@ from numpy import argmax, argmin, finfo, float64
 from numba import njit
 from pandas import DataFrame, Series
 
-from pandas_ta._typing import Array, Int, IntFloat, ListStr, Union
-from pandas_ta.utils._validate import v_bool, v_pos_default, v_series
-from pandas_ta.maps import Imports
+from pandas_ta_tnt._typing import Array, Int, IntFloat, ListStr, Union
+from pandas_ta_tnt.utils._validate import v_bool, v_pos_default, v_series
+from pandas_ta_tnt.maps import Imports
 
 __all__ = [
     "camelCase2Title",
@@ -41,7 +41,7 @@ def category_files(category: str) -> list:
     """Helper function to return all filenames in the category directory."""
     files = [
         x.stem
-        for x in list(Path(f"pandas_ta/{category}/").glob("*.py"))
+        for x in list(Path(f"pandas_ta_tnt/{category}/").glob("*.py"))
         if x.stem != "__init__"
     ]
     return files

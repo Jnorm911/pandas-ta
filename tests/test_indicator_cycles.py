@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import pandas_ta as ta
+import pandas_ta_tnt as ta
 
 from pandas import Series
 

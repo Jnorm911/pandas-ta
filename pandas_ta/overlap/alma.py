@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from numpy import append, arange, array, exp, floor, nan, tensordot
 from numpy.version import version as np_version
-from pandas_ta._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
 from pandas import Series
-from pandas_ta.utils import strided_window, v_offset, v_pos_default, v_series
+from pandas_ta_tnt.utils import strided_window, v_offset, v_pos_default, v_series
 
 
 

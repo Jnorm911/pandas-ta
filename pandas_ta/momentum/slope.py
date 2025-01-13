@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from numpy import arctan, pi, rad2deg
 from pandas import Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.utils import (
     nb_idiff,
     v_bool,
     v_offset,

@@ -6,8 +6,8 @@ from numpy import array
 from pandas import DataFrame, DatetimeIndex, read_csv
 import pandas_datareader as pdr
 
-import pandas_ta
-from pandas_ta._typing import DictLike, IntFloat
+import pandas_ta_tnt
+from pandas_ta_tnt._typing import DictLike, IntFloat
 
 sample_adx_data = read_csv(
     f"data/ADX_D.csv", index_col=0,
@@ -81,7 +81,7 @@ def load(**kwargs: DictLike):
         print(f"{INFO} From {df.index[0]} to {df.index[-1]}\n{df}\n")
     return df
 
-_tdpy = pandas_ta.RATE["TRADING_DAYS_PER_YEAR"]
+_tdpy = pandas_ta_tnt.RATE["TRADING_DAYS_PER_YEAR"]
 # At least 90 (88 with trix with default values) bars/rows/observations are
 # needed to test All indicators individually and within the DataFrame
 # extension. A larger sample may be required because of the Unstable Period

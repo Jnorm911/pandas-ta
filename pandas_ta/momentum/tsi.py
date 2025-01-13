@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from numpy import isnan
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.ma import ma
-from pandas_ta.overlap import ema
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.ma import ma
+from pandas_ta_tnt.overlap import ema
+from pandas_ta_tnt.utils import (
     v_drift,
     v_mamode,
     v_offset,

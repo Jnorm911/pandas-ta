@@ -5,7 +5,7 @@ sys.dont_write_bytecode = True
 from os import system as os_system
 
 import pytest
-import pandas_ta as ta
+import pandas_ta_tnt as ta
 
 from pandas import read_csv
 

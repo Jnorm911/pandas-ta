@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.ma import ma
-from pandas_ta.trend.long_run import long_run
-from pandas_ta.trend.short_run import short_run
-from pandas_ta.utils import v_mamode, v_offset, v_pos_default, v_series
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.ma import ma
+from pandas_ta_tnt.trend.long_run import long_run
+from pandas_ta_tnt.trend.short_run import short_run
+from pandas_ta_tnt.utils import v_mamode, v_offset, v_pos_default, v_series
 from .obv import obv
 
 

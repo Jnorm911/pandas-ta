@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from numpy import nan
 from pandas import Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.maps import Imports
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.utils import (
     v_drift,
     v_offset,
     v_pos_default,
@@ -86,9 +86,9 @@ def vidya(
 
 def _cmo(source: Series, n: int, d: int):
     """Chande Momentum Oscillator (CMO) Patch
-    For some reason: from pandas_ta.momentum import cmo causes
-    pandas_ta.momentum.coppock to not be able to import it's
-    wma like from pandas_ta.overlap import wma?
+    For some reason: from pandas_ta_tnt.momentum import cmo causes
+    pandas_ta_tnt.momentum.coppock to not be able to import it's
+    wma like from pandas_ta_tnt.overlap import wma?
     Weird Circular TypeError!?
     """
     mom = source.diff(d)

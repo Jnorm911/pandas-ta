@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from numpy import nan
 from pandas import DataFrame, Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.overlap import ema, linreg, sma
-from pandas_ta.trend import decreasing, increasing
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.overlap import ema, linreg, sma
+from pandas_ta_tnt.trend import decreasing, increasing
+from pandas_ta_tnt.utils import (
     simplify_columns,
     unsigned_differences,
     v_bool,
@@ -13,7 +13,7 @@ from pandas_ta.utils import (
     v_pos_default,
     v_series
 )
-from pandas_ta.volatility import bbands, kc
+from pandas_ta_tnt.volatility import bbands, kc
 from .mom import mom
 
 

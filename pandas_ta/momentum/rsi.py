@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from pandas import DataFrame, concat, Series
-from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.maps import Imports
-from pandas_ta.ma import ma
-from pandas_ta.utils import (
+from pandas_ta_tnt._typing import DictLike, Int, IntFloat
+from pandas_ta_tnt.maps import Imports
+from pandas_ta_tnt.ma import ma
+from pandas_ta_tnt.utils import (
     signals,
     v_drift,
     v_mamode,

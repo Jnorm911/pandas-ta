@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from pandas import Series
-from pandas_ta._typing import DictLike, Int
-from pandas_ta.overlap import ema, sma
-from pandas_ta.utils import v_offset, v_pos_default, v_series
-from pandas_ta.volatility import atr
+from pandas_ta_tnt._typing import DictLike, Int
+from pandas_ta_tnt.overlap import ema, sma
+from pandas_ta_tnt.utils import v_offset, v_pos_default, v_series
+from pandas_ta_tnt.volatility import atr
 
 
 
