@@ -1,18 +1,25 @@
 # -*- coding: utf-8 -*-
+# setup.py
+import re
+from pathlib import Path
 from setuptools import setup, find_packages
 
+def read_version():
+    ver_path = Path(__file__).parent / "pandas_ta_tnt" / "_version.py"
+    content = ver_path.read_text()
+    match = re.search(r'^__version__ = ["\']([^"\']*)["\']', content, re.MULTILINE)
+    if match:
+        return match.group(1)
+    raise RuntimeError("Unable to find __version__ in _version.py")
+
 long_description = (
-    "Pandas Technical Analysis, Pandas TA, is a free, Open Source, and easy to use "
-    "Technical Analysis library with a Pandas DataFrame Extension. It has over 200 indicators, "
-    "utility functions and TA Lib Candlestick Patterns. Beyond TA feature generation, it has a "
-    "flat library structure, it's own DataFrame Extension (called 'ta'), Custom Indicator Studies "
-    "and Independent Custom Directory."
+    "Pandas Technical Analysis, Pandas TA, is a free, ..."
 )
 
 setup(
     name="pandas_ta_tnt",
+    version=read_version(),
     packages=find_packages(),
-    version="0.6.0",
     description=long_description,
     long_description=long_description,
     author="Kevin Johnson",

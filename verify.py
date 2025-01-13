@@ -1,0 +1,2 @@
+import pandas_ta_tnt
+print(pandas_ta_tnt.__version__)
