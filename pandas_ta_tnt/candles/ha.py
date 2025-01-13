@@ -1,3 +1,4 @@
+#ha.py ensure this one does not make double features, I see ha_low and HA_low etc. and check for no future leakage
 # -*- coding: utf-8 -*-
 from numpy import empty_like, maximum, minimum
 from numba import njit

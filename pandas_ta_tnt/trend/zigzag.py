@@ -1,3 +1,4 @@
+#zigzag.py
 # -*- coding: utf-8 -*-
 from numpy import floor, isnan, nan, zeros, zeros_like
 from numba import njit

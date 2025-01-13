@@ -1,3 +1,4 @@
+#ichimoku.py some defaults have future leakage.
 # -*- coding: utf-8 -*-
 from pandas import DataFrame, RangeIndex, Timedelta, Series, concat, date_range
 from pandas_ta_tnt._typing import DictLike, Int

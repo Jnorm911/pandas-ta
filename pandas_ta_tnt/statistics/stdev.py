@@ -1,3 +1,4 @@
+#stdev.py
 # -*- coding: utf-8 -*-
 from numpy import sqrt
 from pandas import Series

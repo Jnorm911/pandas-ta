@@ -1,3 +1,4 @@
+#log_return.py
 # -*- coding: utf-8 -*-
 from pandas import Series
 from numpy import log, nan, roll

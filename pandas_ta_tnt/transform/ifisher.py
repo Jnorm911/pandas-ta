@@ -1,3 +1,4 @@
+#ifisher.py
 # -*- coding: utf-8 -*-
 from numpy import exp, isnan, logical_and, max, min
 from pandas import DataFrame, Series

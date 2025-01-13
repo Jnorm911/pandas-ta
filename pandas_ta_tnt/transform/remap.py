@@ -1,3 +1,4 @@
+#remap.py This one has a long default param name, please shorten it as well.
 # -*- coding: utf-8 -*-
 from pandas import Series
 from pandas_ta_tnt._typing import DictLike, Int, IntFloat

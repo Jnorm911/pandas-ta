@@ -1,3 +1,4 @@
+#tos_stdevall.py
 # -*- coding: utf-8 -*-
 from numpy import arange, array, polyfit, std
 from pandas import DataFrame, DatetimeIndex, Series
