@@ -1,25 +1,18 @@
 # -*- coding: utf-8 -*-
-from setuptools import setup
+from setuptools import setup, find_packages
 
-long_description = "Pandas Technical Analysis, Pandas TA, is a free, Open Source, and easy to use Technical Analysis library with a Pandas DataFrame Extension. It has over 200 indicators, utility functions and TA Lib Candlestick Patterns. Beyond TA feature generation, it has a flat library structure, it's own DataFrame Extension (called 'ta'), Custom Indicator Studies and Independent Custom Directory."
+long_description = (
+    "Pandas Technical Analysis, Pandas TA, is a free, Open Source, and easy to use "
+    "Technical Analysis library with a Pandas DataFrame Extension. It has over 200 indicators, "
+    "utility functions and TA Lib Candlestick Patterns. Beyond TA feature generation, it has a "
+    "flat library structure, it's own DataFrame Extension (called 'ta'), Custom Indicator Studies "
+    "and Independent Custom Directory."
+)
 
 setup(
-    name="pandas_ta",
-    packages=[
-        "pandas_ta",
-        "pandas_ta.candles",
-        "pandas_ta.cycles",
-        "pandas_ta.momentum",
-        "pandas_ta.overlap",
-        "pandas_ta.performance",
-        "pandas_ta.statistics",
-        "pandas_ta.transform",
-        "pandas_ta.trend",
-        "pandas_ta.utils",
-        "pandas_ta.volatility",
-        "pandas_ta.volume"
-    ],
-    version=".".join(("0", "4", "19b")),
+    name="pandas_ta_tnt",
+    packages=find_packages(),
+    version="0.6.0",
     description=long_description,
     long_description=long_description,
     author="Kevin Johnson",
@@ -54,30 +47,34 @@ setup(
         "data": ["data/*.csv"],
     },
     install_requires=[
-        "numba>=0.59.0",
-        "numpy==1.26.4",
-        "pandas>=2.2.0",
-        "pandas-datareader",
-        "scipy>=1.12"
+        "numba>=0.60.0",
+        "numpy>=2.0.0",
+        "pandas>=2.2.3",
+        "pandas-datareader>=0.10.0",
+        "scipy>=1.15.1",
     ],
-    # List additional groups of dependencies here (e.g. development dependencies).
-    # You can install these using the following syntax, for example:
-    # $ pip install -e .[full,test]     # locally
-    # $ pip install -U pandas_ta[full]  # pip
     extras_require={
         "full": [
-            "alphaVantage-api", "matplotlib", "mplfinance",
-            "python-dotenv", "sklearn", "statsmodels", "stochastic",
-            "TA-Lib>=0.4.28", "tqdm", "vectorbt", "yfinance>=0.2.36"
+            "alphaVantage-api",
+            "matplotlib>=3.10.0",
+            "mplfinance",
+            "python-dotenv",
+            "sklearn",
+            "statsmodels",
+            "stochastic",
+            "TA-Lib>=0.6.0",
+            "tqdm",
+            "vectorbt",
+            "yfinance>=0.2.51"
         ],
         "test": [
-            "numba>=0.59.0",
-            "numpy==1.26.4",
-            "pandas>=2.2.0",
-            "pandas_datareader>=0.10.0",
+            "numba>=0.60.0",
+            "numpy>=2.0.0",
+            "pandas>=2.2.3",
+            "pandas-datareader>=0.10.0",
             "pytest==7.1.2",
-            "TA-Lib>=0.4.28",
-            "yfinance>=0.2.36"
+            "TA-Lib>=0.6.0",
+            "yfinance>=0.2.51"
         ],
     },
 )
