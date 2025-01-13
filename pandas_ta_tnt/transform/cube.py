@@ -1,10 +1,8 @@
-#cube.py
 # -*- coding: utf-8 -*-
 from numpy import isnan
 from pandas import DataFrame, Series
 from pandas_ta_tnt._typing import DictLike, Int, IntFloat
 from pandas_ta_tnt.utils import v_int, v_lowerbound, v_offset, v_series
-
 
 
 def cube(
@@ -14,25 +12,17 @@ def cube(
     """
     Indicator: Cube Transform
 
-    John Ehlers describes this indicator to be useful in compressing signals
-    near zero for a normalized oscillator like the Inverse Fisher Transform.
-    In conjunction to that, values close to -1 and 1 are nearly unchanged,
-    whereas the ones near zero are reduced regarding their amplitude.
-
-    From the input data the effects of spectral dilation should have been
-    removed (i.e. roofing filter).
+    Raises the input 'close' to a power while optionally shifting signals.
+    Negative offsets are clamped to 0 to prevent future data leakage.
 
     Sources:
-        Book: Cycle Analytics for Traders, 2014, written by John Ehlers
-            page 200
-        Coded by rengel8 based on Markus K. (cryptocoinserver)'s source.
+        Book: Cycle Analytics for Traders, 2014, by John Ehlers (p.200)
 
     Args:
         close (pd.Series): Series of 'close's
-        pwr (float): Use this exponent 'wisely' to increase the impact of the
-            soft limiter. Default: 3
-        signal_offset (int): Offset the signal line. Default: -1
-        offset (int): How many periods to offset the result. Default: 0
+        pwr (float): Exponent. Default: 3
+        signal_offset (int): Offset the signal line (>= 0). Default: -1
+        offset (int): How many periods to offset (>= 0). Default: 0
 
     Kwargs:
         fillna (value, optional): pd.DataFrame.fillna(value)
@@ -45,6 +35,10 @@ def cube(
     pwr = v_lowerbound(pwr, 3.0, 3.0, strict=False)
     signal_offset = v_int(signal_offset, -1, 0)
     offset = v_offset(offset)
+
+    # Force no future leakage by disallowing negative offsets
+    offset = max(offset, 0)
+    signal_offset = max(signal_offset, 0)
 
     # Calculate
     result = close ** pwr

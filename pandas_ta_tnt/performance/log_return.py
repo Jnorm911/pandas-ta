@@ -1,10 +1,9 @@
-#log_return.py
 # -*- coding: utf-8 -*-
 from pandas import Series
-from numpy import log, nan, roll
+from numpy import log, nan
 from pandas_ta_tnt._typing import DictLike, Int
 from pandas_ta_tnt.utils import v_bool, v_offset, v_pos_default, v_series
-
+import numpy as np
 
 
 def log_return(
@@ -13,21 +12,23 @@ def log_return(
 ) -> Series:
     """Log Return
 
-    Calculates the logarithmic return of a Series.
-    See also: help(df.ta.log_return) for additional **kwargs a valid 'df'.
+    Calculates the logarithmic return of a Series without using forward data.
+    Instead of using np.roll (which can inadvertently mix future data), it
+    uses .shift() for historical, non-leaking references.
 
     Sources:
         https://stackoverflow.com/questions/31287552/logarithmic-returns-in-pandas-dataframe
 
     Args:
         close (pd.Series): Series of 'close's
-        length (int): It's period. Default: 20
+        length (int): It's period. Default: 1
         cumulative (bool): If True, returns the cumulative returns.
             Default: False
-        offset (int): How many periods to offset the result. Default: 0
+        offset (int): How many periods to offset the result (>= 0). 
+            Negative offsets are clamped to 0 to avoid future leakage.
 
     Kwargs:
-        fillna (value, optional): pd.DataFrame.fillna(value)
+        fillna (value, optional): pd.Series.fillna(value)
 
     Returns:
         pd.Series: New feature generated.
@@ -35,21 +36,22 @@ def log_return(
     # Validate
     length = v_pos_default(length, 1)
     close = v_series(close, length + 1)
-
     if close is None:
         return
 
     cumulative = v_bool(cumulative, False)
     offset = v_offset(offset)
+    offset = max(offset, 0)  # Clamp negative offset
 
     # Calculate
-    np_close = close.to_numpy()
     if cumulative:
-        r = np_close / np_close[0]
+        # Log of ratio from first valid to current
+        log_return = (close / close.iloc[0]).apply(np.log)
     else:
-        r = np_close / roll(np_close, length)
-        r[:length] = nan
-    log_return = Series(log(r), index=close.index)
+        # Log of ratio from length bars ago
+        log_return = (close / close.shift(length)).apply(np.log)
+        # First 'length' bars have insufficient history
+        log_return.iloc[:length] = nan
 
     # Offset
     if offset != 0:

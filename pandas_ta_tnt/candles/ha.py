@@ -1,11 +1,9 @@
-#ha.py ensure this one does not make double features, I see ha_low and HA_low etc. and check for no future leakage
 # -*- coding: utf-8 -*-
 from numpy import empty_like, maximum, minimum
 from numba import njit
 from pandas import DataFrame, Series
-from pandas_ta_tnt._typing import Array, DictLike, Int
+from pandas_ta_tnt._typing import DictLike, Int
 from pandas_ta_tnt.utils import v_offset, v_series
-
 
 
 @njit(cache=True)
@@ -30,30 +28,20 @@ def ha(
 ) -> DataFrame:
     """Heikin Ashi Candles (HA)
 
-    The Heikin-Ashi technique averages price data to create a Japanese
-    candlestick chart that filters out market noise. Heikin-Ashi charts,
-    developed by Munehisa Homma in the 1700s, share some characteristics
-    with standard candlestick charts but differ based on the values used
-    to create each candle. Instead of using the open, high, low, and close
-    like standard candlestick charts, the Heikin-Ashi technique uses a
-    modified formula based on two-period averages. This gives the chart a
-    smoother appearance, making it easier to spots trends and reversals,
-    but also obscures gaps and some price data.
+    Heikin-Ashi technique uses an average of two periods open-close values
+    to produce a smoother candlestick.
 
-    Sources:
-        https://www.investopedia.com/terms/h/heikinashi.asp
+    Negative offsets are clamped to 0 to avoid forward leakage.
 
     Args:
-        open_ (pd.Series): Series of 'open's
-        high (pd.Series): Series of 'high's
-        low (pd.Series): Series of 'low's
-        close (pd.Series): Series of 'close's
+        open_, high, low, close (pd.Series)
+        offset (int): Shift (>= 0)
 
     Kwargs:
         fillna (value, optional): pd.DataFrame.fillna(value)
 
     Returns:
-        pd.DataFrame: ha_open, ha_high,ha_low, ha_close columns.
+        pd.DataFrame: ha_open, ha_high, ha_low, ha_close
     """
     # Validate
     open_ = v_series(open_, 1)
@@ -61,6 +49,7 @@ def ha(
     low = v_series(low, 1)
     close = v_series(close, 1)
     offset = v_offset(offset)
+    offset = max(offset, 0)  # clamp negative offset
 
     if open_ is None or high is None or low is None or close is None:
         return
@@ -69,6 +58,7 @@ def ha(
     np_open, np_high = open_.to_numpy(), high.to_numpy()
     np_low, np_close = low.to_numpy(), close.to_numpy()
     ha_open, ha_high, ha_low, ha_close = np_ha(np_open, np_high, np_low, np_close)
+
     df = DataFrame({
         "HA_open": ha_open,
         "HA_high": ha_high,

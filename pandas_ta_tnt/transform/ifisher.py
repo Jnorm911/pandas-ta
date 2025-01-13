@@ -1,11 +1,9 @@
-#ifisher.py
 # -*- coding: utf-8 -*-
 from numpy import exp, isnan, logical_and, max, min
 from pandas import DataFrame, Series
 from pandas_ta_tnt._typing import DictLike, Int, IntFloat
 from pandas_ta_tnt.utils import v_int, v_offset, v_scalar, v_series
 from .remap import remap
-
 
 
 def ifisher(
@@ -16,38 +14,24 @@ def ifisher(
     """
     Indicator: Inverse Fisher Transform
 
-    John Ehlers describes this indicator as a tool to change the
-    "Probability Distribution Function (PDF)" for the results of known
-    oscillator-indicators (time series) to receive clearer signals. Its input
-    needs to be normalized into the range from -1 to 1. Input data in the
-    range of -0.5 to 0.5 would not have a significant impact. Ehlers note's as
-    an important fact that larger values will be transformed or compressed
-    stronger to the underlying unity of -1 to 1.
-
-    Preparation Examples (or use 'remap'-indicator for this preparation):
-        (RSI - 50) * 0.1        RSI [0 to 100] -> -5 to 5
-        (RSI - 50) * 0.02       RSI [0 to 100] -> -1 to 1, use amp of 5 to
-                                                           match input of
-                                                           example above
+    Transforms data in [-1, 1] domain using the inverse Fisher function.
+    Negative offsets are clamped to 0 to prevent future data leakage.
 
     Sources:
-        https://www.mesasoftware.com/papers/TheInverseFisherTransform.pdf,
-        Book: Cycle Analytics for Traders, 2014, written by John Ehlers,
-            page 198
-        Coded by rengel8 based on Markus K. (cryptocoinserver)'s source.
+        https://www.mesasoftware.com/papers/TheInverseFisherTransform.pdf
+        Book: Cycle Analytics for Traders, 2014, by John Ehlers (p.198)
 
     Args:
         close (pd.Series): Series of 'close's
-        amp (float): Use the amplifying factor to increase the impact of
-            the soft limiter. Default: 1
-        signal_offset (int): Offset the signal line. Default: -1
-        offset (int): How many periods to offset the result. Default: 0
+        amp (float): Amplification factor. Default: 1
+        signal_offset (int): Signal line shift (>= 0). Default: -1
+        offset (int): Final result shift (>= 0). Default: 0
 
     Kwargs:
         fillna (value, optional): pd.DataFrame.fillna(value)
 
     Returns:
-        pd.DataFrame: New feature generated.
+        pd.DataFrame: Two columns for the transform and signal.
     """
     # Validate
     close = v_series(close)
@@ -55,15 +39,23 @@ def ifisher(
     signal_offset = v_int(signal_offset, -1, 0)
     offset = v_offset(offset)
 
+    # Clamp offsets to avoid future leakage
+    offset = max(offset, 0)
+    signal_offset = max(signal_offset, 0)
+
     # Calculate
     np_close = close.to_numpy()
     is_remapped = logical_and(np_close >= -1, np_close <= 1)
     if not all(is_remapped):
         np_max, np_min = max(np_close), min(np_close)
-        close_map = remap(close, from_min=np_min, from_max=np_max, to_min=-1, to_max=1)
+        close_map = remap(
+            close,  # calls our updated remap
+            fmin=np_min, fmax=np_max, tmin=-1, tmax=1
+        )
         if close_map is None or all(isnan(close_map.to_numpy())):
             return  # Emergency Break
         np_close = close_map.to_numpy()
+
     amped = exp(amp * np_close)
     result = (amped - 1) / (amped + 1)
 

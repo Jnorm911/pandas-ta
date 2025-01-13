@@ -5,59 +5,63 @@ from pandas_ta_tnt.overlap import sma
 from pandas_ta_tnt.utils import v_bool, v_offset, v_pos_default, v_series
 
 
-
 def dpo(
     close: Series, length: Int = None, centered: bool = True,
     offset: Int = None, **kwargs: DictLike
 ) -> Series:
     """Detrend Price Oscillator (DPO)
 
-    Is an indicator designed to remove trend from price and make it easier to
-    identify cycles.
+    DPO attempts to remove trend from price and highlight cycles.
 
-    WARNING: This function may leak future data when used for machine learning
-        if centered=True (default). Set lookahead=False to avoid data leakage.
-        See https://github.com/twopirllc/pandas-ta/issues/60#.
+    If 'centered' is True, it shifts data backward by t = int(0.5 * length)+1,
+    then forward again, effectively referencing future bars. This can cause
+    data leakage in ML. Setting 'lookahead=False' in kwargs disables centering.
+
+    Negative offsets are also clamped to prevent future leakage.
 
     Sources:
         https://www.tradingview.com/scripts/detrendedpriceoscillator/
-        https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/dpo
-        http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:detrended_price_osci
+        https://www.fidelity.com/learning-center/trading-investing/
+             technical-analysis/technical-indicator-guide/dpo
+        http://stockcharts.com/school/doku.php?id=chart_school:
+            technical_indicators:detrended_price_osci
 
     Args:
         close (pd.Series): Series of 'close's
-        length (int): It's period. Default: 1
-        centered (bool): Shift the dpo back by int(0.5 * length) + 1.
-            Default: True
-        offset (int): How many periods to offset the result. Default: 0
+        length (int): Period. Default: 20
+        centered (bool): If True, references data around the middle, 
+            effectively peeking forward. Default: True
+        offset (int): Shift result forward/backward (>= 0)
 
     Kwargs:
-        lookahead (value, optional): To prevent centering
-            and avoid potential data leakage, set to False.
-        fillna (value, optional): pd.DataFrame.fillna(value)
+        lookahead (bool): If False, forcibly sets centered=False.
+        fillna (value, optional): pd.Series.fillna(value)
 
     Returns:
-        pd.Series: New feature generated.
+        pd.Series: DPO
     """
     # Validate
     length = v_pos_default(length, 20)
     close = v_series(close, length + 1)
-
     if close is None:
         return
 
     centered = v_bool(centered, True)
-    offset = v_offset(offset)
     if not kwargs.get("lookahead", True):
         centered = False
+
+    offset = v_offset(offset)
+    offset = max(offset, 0)  # Clamp negative offsets
 
     # Calculate
     t = int(0.5 * length) + 1
     ma = sma(close, length)
 
     if centered:
+        # shift forward and backward
         dpo = (close.shift(t) - ma).shift(-t)
     else:
+        # standard approach with only backward shift
         dpo = close - ma.shift(t)
 
     # Offset

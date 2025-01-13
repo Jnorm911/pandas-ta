@@ -1,57 +1,56 @@
-#remap.py This one has a long default param name, please shorten it as well.
 # -*- coding: utf-8 -*-
 from pandas import Series
 from pandas_ta_tnt._typing import DictLike, Int, IntFloat
 from pandas_ta_tnt.utils import v_float, v_offset, v_series
 
 
-
 def remap(
-    close: Series, from_min: IntFloat = None, from_max: IntFloat = None,
-    to_min: IntFloat = None, to_max: IntFloat = None,
+    close: Series, fmin: IntFloat = None, fmax: IntFloat = None,
+    tmin: IntFloat = None, tmax: IntFloat = None,
     offset: Int = None, **kwargs: DictLike
 ) -> Series:
     """
     Indicator: ReMap (REMAP)
 
-    Basically a static normalizer, which maps the input min and max to a given
-    output range. Many range bound oscillators move between 0 and 100, but
-    there are also other variants. Refer to the example below or add more the
-    list.
+    Maps (normalizes) data from [fmin, fmax] to [tmin, tmax].
+    Negative offset is clamped to 0 to avoid forward-looking data.
 
     Examples:
-        RSI -> IFISHER: from_min=0, from_max=100, to_min=-1, to_max=1.0
-
-    Sources:
-        rengel8 for Pandas TA
+        RSI -> IFISHER: fmin=0, fmax=100, tmin=-1, tmax=1
 
     Args:
         close (pd.Series): Series of 'close's
-        from_min (float): Input minimum. Default: 0.0
-        from_max (float): Input maximum. Default: 100.0
-        to_min (float): Output minimum. Default: 0.0
-        to_max (float): Output maximum. Default: 100.0
-        offset (int): How many periods to offset the result. Default: 0
+        fmin (float): Input minimum. Default: 0.0
+        fmax (float): Input maximum. Default: 100.0
+        tmin (float): Output minimum. Default: -1.0
+        tmax (float): Output maximum. Default: 1.0
+        offset (int): Shift the result forward/backward (>= 0).
 
     Kwargs:
-        fillna (value, optional): pd.DataFrame.fillna(value)
+        fillna (value, optional): pd.Series.fillna(value)
 
     Returns:
-        pd.Series: New feature generated.
+        pd.Series: Remapped feature.
     """
     # Validate
     close = v_series(close)
-    from_min = v_float(from_min, 0.0, 0.0)
-    from_max = v_float(from_max, 100.0, 0.0)
-    to_min = v_float(to_min, -1.0, 0.0)
-    to_max = v_float(to_max, 1.0, 0.0)
+    fmin = v_float(fmin, 0.0, 0.0)
+    fmax = v_float(fmax, 100.0, 0.0)
+    tmin = v_float(tmin, -1.0, 0.0)
+    tmax = v_float(tmax, 1.0, 0.0)
     offset = v_offset(offset)
+    offset = max(offset, 0)  # clamp negative offset
+
+    if close is None:
+        return
 
     # Calculate
-    frange, trange = from_max - from_min, to_max - to_min
+    frange = fmax - fmin
+    trange = tmax - tmin
     if frange <= 0 or trange <= 0:
         return
-    result = to_min + (trange / frange) * (close.to_numpy() - from_min)
+
+    result = tmin + (trange / frange) * (close.to_numpy() - fmin)
     result = Series(result, index=close.index)
 
     # Offset
@@ -63,8 +62,7 @@ def remap(
         result.fillna(kwargs["fillna"], inplace=True)
 
     # Name and Category
-    result.name = f"REMAP_{from_min}_{from_max}_{to_min}_{to_max}"
-    # result.name = f"{close.name}_{from_min}_{from_max}_{to_min}_{to_max}" # OR
+    result.name = f"REMAP_{fmin}_{fmax}_{tmin}_{tmax}"
     result.category = "transform"
 
     return result

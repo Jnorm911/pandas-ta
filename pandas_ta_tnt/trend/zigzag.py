@@ -1,4 +1,3 @@
-#zigzag.py
 # -*- coding: utf-8 -*-
 from numpy import floor, isnan, nan, zeros, zeros_like
 from numba import njit
@@ -12,23 +11,21 @@ from pandas_ta_tnt.utils import (
 )
 
 
-
 @njit(cache=True)
 def nb_rolling_hl(np_high, np_low, window_size):
     m = np_high.size
     idx = zeros(m)
-    swing = zeros(m)  # where a high = 1 and low = -1
+    swing = zeros(m)
     value = zeros(m)
 
     extremums = 0
     left = int(floor(window_size / 2))
     right = left + 1
-    # sample_array = [*[left-window], *[center], *[right-window]]
     for i in range(left, m - right):
         low_center = np_low[i]
         high_center = np_high[i]
-        low_window = np_low[i - left: i + right]
-        high_window = np_high[i - left: i + right]
+        low_window = np_low[i - left : i + right]
+        high_window = np_high[i - left : i + right]
 
         if (low_center <= low_window).all():
             idx[extremums] = i
@@ -60,7 +57,7 @@ def nb_find_zigzags(idx, swing, value, deviation):
 
     m = idx.size
     for i in range(m - 2, -1, -1):
-        # last point in zigzag is bottom
+        # If last point in zigzag is bottom
         if zz_swing[zigzags] == -1:
             if swing[i] == -1:
                 if zz_value[zigzags] > value[i] and zigzags > 1:
@@ -80,7 +77,7 @@ def nb_find_zigzags(idx, swing, value, deviation):
                     zz_value[zigzags] = value[i]
                     zz_dev[zigzags - 1] = 100 * current_dev
 
-        # last point in zigzag is peak
+        # If last point in zigzag is peak
         else:
             if swing[i] == 1:
                 if zz_value[zigzags] < value[i] and zigzags > 1:
@@ -125,58 +122,44 @@ def nb_map_zigzag(idx, swing, value, deviation, n):
     return swing_map, value_map, dev_map
 
 
-
 def zigzag(
     high: Series, low: Series, close: Series = None,
     legs: int = None, deviation: IntFloat = None,
     retrace: bool = None, last_extreme: bool = None,
     offset: Int = None, **kwargs: DictLike
 ):
-    """ Zigzag (ZIGZAG)
+    """Zigzag (ZIGZAG)
 
-    Zigzag attempts to filter out smaller price movments while highlighting
-    trend direction. It does not predict future trends, but it does identify
-    swing highs and lows. When 'deviation' is set to 10, it will ignore
-    all price movements less than 10%; only price movements greater than 10%
-    would be shown.
-
-    Note: Zigzag lines are not permanent and a price reversal will create a
-        new line.
-
-    Sources:
-        https://www.tradingview.com/support/solutions/43000591664-zig-zag/#:~:text=Definition,trader%20visual%20the%20price%20action.
-        https://school.stockcharts.com/doku.php?id=technical_indicators:zigzag
+    Zigzag is inherently a future-looking indicator since it "confirms" pivots
+    only in hindsight. This version simply clamps any negative offset to 0 so
+    you cannot forcibly shift the final result into the past (which would
+    explicitly leak future data).
 
     Args:
-        high (pd.Series): Series of 'high's
-        low (pd.Series): Series of 'low's
-        close (pd.Series): Series of 'close's. Default: None
-        legs (int): Number of legs > 2. Default: 10
-        deviation (float): Price Deviation Percentage for a reversal.
-            Default: 5
-        retrace (bool): Default: False
-        last_extreme (bool): Default: True
-        offset (int): How many periods to offset the result. Default: 0
+        high, low (pd.Series)
+        close (pd.Series): Optional
+        legs (int): Window size
+        deviation (float): Price deviation threshold
+        retrace (bool): Not used, placeholder
+        last_extreme (bool): Not used, placeholder
+        offset (int): Shift (>= 0) to avoid future leakage.
 
     Kwargs:
         fillna (value, optional): pd.DataFrame.fillna(value)
-        fill_method (value, optional): Type of fill method
 
     Returns:
-        pd.DataFrame: swing, and swing_type (high or low).
+        pd.DataFrame: swing, swing_value, swing_deviation
     """
     # Validate
     legs = v_pos_default(legs, 10)
     _length = legs + 1
     high = v_series(high, _length)
     low = v_series(low, _length)
-
     if high is None or low is None:
         return
 
     if close is not None:
-        close = v_series(close,_length)
-        np_close = close.values
+        close = v_series(close, _length)
         if close is None:
             return
 
@@ -184,12 +167,17 @@ def zigzag(
     retrace = v_bool(retrace, False)
     last_extreme = v_bool(last_extreme, True)
     offset = v_offset(offset)
+    offset = max(offset, 0)  # Clamp negative offset
 
     # Calculation
     np_high, np_low = high.to_numpy(), low.to_numpy()
     hli, hls, hlv = nb_rolling_hl(np_high, np_low, legs)
     zzi, zzs, zzv, zzd = nb_find_zigzags(hli, hls, hlv, deviation)
     zz_swing, zz_value, zz_dev = nb_map_zigzag(zzi, zzs, zzv, zzd, np_high.size)
+
+    zz_swing = Series(zz_swing, index=high.index)
+    zz_value = Series(zz_value, index=high.index)
+    zz_dev = Series(zz_dev, index=high.index)
 
     # Offset
     if offset != 0:
