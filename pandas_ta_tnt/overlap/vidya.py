@@ -11,8 +11,6 @@ from pandas_ta_tnt.utils import (
     v_talib
 )
 
-
-
 def vidya(
     close: Series, length: Int = None,
     drift: Int = None, offset: Int = None,
@@ -33,7 +31,9 @@ def vidya(
     Args:
         close (pd.Series): Series of 'close's
         length (int): It's period. Default: 14
+        drift (int): Period offset for the change calculation. Default: 1
         offset (int): How many periods to offset the result. Default: 0
+        talib (bool): Whether to use ta-lib's CMO. Default: None
 
     Kwargs:
         fillna (value, optional): pd.DataFrame.fillna(value)
@@ -56,17 +56,23 @@ def vidya(
     m = close.size
     alpha = 2 / (length + 1)
 
+    # Compute CMO, handling ta-lib or fallback to our _cmo function
     if Imports["talib"] and mode_tal:
         from talib import CMO
         cmo_ = CMO(close, length)
     else:
         cmo_ = _cmo(close, length, drift)
+
+    # Take absolute value of CMO for use in VIDYA
     abs_cmo = cmo_.abs().astype(float)
 
     vidya = Series(0.0, index=close.index)
     for i in range(length, m):
+        # The factor: alpha * abs_cmo[i]
         vidya.iloc[i] = alpha * abs_cmo.iloc[i] * close.iloc[i] + \
-            vidya.iloc[i - 1] * (1 - alpha * abs_cmo.iloc[i])
+                        vidya.iloc[i - 1] * (1 - alpha * abs_cmo.iloc[i])
+
+    # Replace initial zeros with NaN
     vidya.replace({0: nan}, inplace=True)
 
     # Offset
@@ -85,15 +91,22 @@ def vidya(
 
 
 def _cmo(source: Series, n: int, d: int):
-    """Chande Momentum Oscillator (CMO) Patch
+    """
+    Chande Momentum Oscillator (CMO) Patch
     For some reason: from pandas_ta_tnt.momentum import cmo causes
-    pandas_ta_tnt.momentum.coppock to not be able to import it's
+    pandas_ta_tnt.momentum.coppock to not be able to import its
     wma like from pandas_ta_tnt.overlap import wma?
     Weird Circular TypeError!?
+
+    Added a small epsilon to the denominator to prevent division by zero or
+    near-zero, which can cause extremely large or infinite values.
     """
+    eps = 1e-9  # Epsilon to avoid division by zero
     mom = source.diff(d)
     positive = mom.copy().clip(lower=0)
     negative = mom.copy().clip(upper=0).abs()
+
     pos_sum = positive.rolling(n).sum()
     neg_sum = negative.rolling(n).sum()
-    return (pos_sum - neg_sum) / (pos_sum + neg_sum)
+
+    return (pos_sum - neg_sum) / (pos_sum + neg_sum + eps)
