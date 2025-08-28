@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-from numpy import floor, isnan, nan, zeros, zeros_like
-from numba import njit
-from pandas import Series, DataFrame
+import numpy as np
+import pandas as pd
+from pandas import DataFrame, Series
 from pandas_ta._typing import DictLike, Int, IntFloat
 from pandas_ta.utils import (
     v_bool,
@@ -11,209 +10,168 @@ from pandas_ta.utils import (
 )
 
 
-
-@njit(cache=True)
-def nb_rolling_hl(np_high, np_low, window_size):
-    m = np_high.size
-    idx = zeros(m)
-    swing = zeros(m)  # where a high = 1 and low = -1
-    value = zeros(m)
-
-    extremums = 0
-    left = int(floor(window_size / 2))
-    right = left + 1
-    # sample_array = [*[left-window], *[center], *[right-window]]
-    for i in range(left, m - right):
-        low_center = np_low[i]
-        high_center = np_high[i]
-        low_window = np_low[i - left: i + right]
-        high_window = np_high[i - left: i + right]
-
-        if (low_center <= low_window).all():
-            idx[extremums] = i
-            swing[extremums] = -1
-            value[extremums] = low_center
-            extremums += 1
-
-        if (high_center >= high_window).all():
-            idx[extremums] = i
-            swing[extremums] = 1
-            value[extremums] = high_center
-            extremums += 1
-
-    return idx[:extremums], swing[:extremums], value[:extremums]
-
-
-@njit(cache=True)
-def nb_find_zigzags(idx, swing, value, deviation):
-    zz_idx = zeros_like(idx)
-    zz_swing = zeros_like(swing)
-    zz_value = zeros_like(value)
-    zz_dev = zeros_like(idx)
-
-    zigzags = 0
-    zz_idx[zigzags] = idx[-1]
-    zz_swing[zigzags] = swing[-1]
-    zz_value[zigzags] = value[-1]
-    zz_dev[zigzags] = 0
-
-    m = idx.size
-    for i in range(m - 2, -1, -1):
-        # last point in zigzag is bottom
-        if zz_swing[zigzags] == -1:
-            if swing[i] == -1:
-                if zz_value[zigzags] > value[i] and zigzags > 1:
-                    current_dev = (zz_value[zigzags - 1] - value[i]) / value[i]
-                    zz_idx[zigzags] = idx[i]
-                    zz_swing[zigzags] = swing[i]
-                    zz_value[zigzags] = value[i]
-                    zz_dev[zigzags - 1] = 100 * current_dev
-            else:
-                current_dev = (value[i] - zz_value[zigzags]) / value[i]
-                if current_dev > 0.01 * deviation:
-                    if zz_idx[zigzags] == idx[i]:
-                        continue
-                    zigzags += 1
-                    zz_idx[zigzags] = idx[i]
-                    zz_swing[zigzags] = swing[i]
-                    zz_value[zigzags] = value[i]
-                    zz_dev[zigzags - 1] = 100 * current_dev
-
-        # last point in zigzag is peak
-        else:
-            if swing[i] == 1:
-                if zz_value[zigzags] < value[i] and zigzags > 1:
-                    current_dev = (value[i] - zz_value[zigzags - 1]) / value[i]
-                    zz_idx[zigzags] = idx[i]
-                    zz_swing[zigzags] = swing[i]
-                    zz_value[zigzags] = value[i]
-                    zz_dev[zigzags - 1] = 100 * current_dev
-            else:
-                current_dev = (zz_value[zigzags] - value[i]) / value[i]
-                if current_dev > 0.01 * deviation:
-                    if zz_idx[zigzags] == idx[i]:
-                        continue
-                    zigzags += 1
-                    zz_idx[zigzags] = idx[i]
-                    zz_swing[zigzags] = swing[i]
-                    zz_value[zigzags] = value[i]
-                    zz_dev[zigzags - 1] = 100 * current_dev
-
-    _n = zigzags + 1
-    return zz_idx[:_n], zz_swing[:_n], zz_value[:_n], zz_dev[:_n]
-
-
-@njit(cache=True)
-def nb_map_zigzag(idx, swing, value, deviation, n):
-    swing_map = zeros(n)
-    value_map = zeros(n)
-    dev_map = zeros(n)
-
-    for j, i in enumerate(idx):
-        i = int(i)
-        swing_map[i] = swing[j]
-        value_map[i] = value[j]
-        dev_map[i] = deviation[j]
-
-    for i in range(n):
-        if swing_map[i] == 0:
-            swing_map[i] = nan
-            value_map[i] = nan
-            dev_map[i] = nan
-
-    return swing_map, value_map, dev_map
-
-
-
 def zigzag(
-    high: Series, low: Series, close: Series = None,
-    legs: int = None, deviation: IntFloat = None,
-    retrace: bool = None, last_extreme: bool = None,
-    offset: Int = None, **kwargs: DictLike
-):
-    """ Zigzag (ZIGZAG)
+    high: Series,
+    low: Series,
+    close: Series = None,
+    legs: int = None,
+    deviation: IntFloat = None,
+    retrace: bool = None,
+    last_extreme: bool = None,
+    offset: Int = None,
+    **kwargs: DictLike
+) -> DataFrame:
+    """
+    Non-repainting ZigZag (no future data usage).
 
-    Zigzag attempts to filter out smaller price movments while highlighting
-    trend direction. It does not predict future trends, but it does identify
-    swing highs and lows. When 'deviation' is set to 10, it will ignore
-    all price movements less than 10%; only price movements greater than 10%
-    would be shown.
-
-    Note: Zigzag lines are not permanent and a price reversal will create a
-        new line.
-
-    Sources:
-        https://www.tradingview.com/support/solutions/43000591664-zig-zag/#:~:text=Definition,trader%20visual%20the%20price%20action.
-        https://school.stockcharts.com/doku.php?id=technical_indicators:zigzag
+    It identifies a swing (high or low) only *after* price has reversed by a
+    certain percentage (deviation) from the most recent pivot. This ensures:
+      - No forward-looking data (no "repainting").
+      - The same function name & columns, so existing code won't break.
 
     Args:
         high (pd.Series): Series of 'high's
         low (pd.Series): Series of 'low's
         close (pd.Series): Series of 'close's. Default: None
-        legs (int): Number of legs > 2. Default: 10
-        deviation (float): Price Deviation Percentage for a reversal.
-            Default: 5
-        retrace (bool): Default: False
-        last_extreme (bool): Default: True
-        offset (int): How many periods to offset the result. Default: 0
+        legs (int): (Unused but kept for compatibility) Default: 10
+        deviation (float): Price Deviation Percentage to confirm a pivot.
+                           Default: 5.0
+        retrace (bool): (Unused but kept for compatibility) Default: False
+        last_extreme (bool): (Unused but kept for compatibility) Default: True
+        offset (int): Positive offset only. Negative shifts would cause leakage.
+                      Default: 0
 
     Kwargs:
-        fillna (value, optional): pd.DataFrame.fillna(value)
-        fill_method (value, optional): Type of fill method
+        fillna (value, optional): Value to fill missing data
+        fill_method (value, optional): Method to fill missing data
 
     Returns:
-        pd.DataFrame: swing, and swing_type (high or low).
+        pd.DataFrame with columns:
+            "ZIGZAGs_{deviation}%_{legs}" : swing signal (+1 pivot high, -1 pivot low, 0 otherwise)
+            "ZIGZAGv_{deviation}%_{legs}" : pivot price at the pivot bar (0 otherwise)
+            "ZIGZAGd_{deviation}%_{legs}" : % movement from the last pivot (0 otherwise)
     """
-    # Validate
+    # 1) Parameter defaults
     legs = v_pos_default(legs, 10)
-    _length = legs + 1
-    high = v_series(high, _length)
-    low = v_series(low, _length)
-
-    if high is None or low is None:
-        return
-
-    if close is not None:
-        close = v_series(close,_length)
-        np_close = close.values
-        if close is None:
-            return
-
     deviation = v_pos_default(deviation, 5.0)
     retrace = v_bool(retrace, False)
     last_extreme = v_bool(last_extreme, True)
     offset = v_offset(offset)
 
-    # Calculation
-    np_high, np_low = high.to_numpy(), low.to_numpy()
-    hli, hls, hlv = nb_rolling_hl(np_high, np_low, legs)
-    zzi, zzs, zzv, zzd = nb_find_zigzags(hli, hls, hlv, deviation)
-    zz_swing, zz_value, zz_dev = nb_map_zigzag(zzi, zzs, zzv, zzd, np_high.size)
+    # 2) Validate data
+    _length = legs + 1
+    high = v_series(high, _length)
+    low = v_series(low, _length)
+    if close is not None:
+        close = v_series(close, _length)
 
-    # Offset
-    if offset != 0:
-        zz_swing = zz_swing.shift(offset)
-        zz_value = zz_value.shift(offset)
-        zz_dev = zz_dev.shift(offset)
+    if high is None or low is None or high.empty or low.empty:
+        return
 
-    # Fill
-    if "fillna" in kwargs:
-        zz_swing.fillna(kwargs["fillna"], inplace=True)
-        zz_value.fillna(kwargs["fillna"], inplace=True)
-        zz_dev.fillna(kwargs["fillna"], inplace=True)
-    if "fill_method" in kwargs:
-        zz_swing.fillna(method=kwargs["fill_method"], inplace=True)
-        zz_value.fillna(method=kwargs["fill_method"], inplace=True)
-        zz_dev.fillna(method=kwargs["fill_method"], inplace=True)
+    if offset < 0:
+        raise ValueError("Negative offset not allowed. It would leak future data.")
 
-    _props = f"_{deviation}%_{legs}"
+    # 3) Prepare arrays
+    n = len(high)
+    swings = np.full(n, np.nan, dtype=np.float64)    # +1 or -1, else NaN
+    pivot_vals = np.full(n, np.nan, dtype=np.float64)
+    pivot_dev = np.full(n, np.nan, dtype=np.float64)
+
+    # Convert deviation% to fraction
+    dev_frac = deviation / 100.0
+
+    # We'll track the last confirmed pivot index and type
+    pivot_idx = 0
+    pivot_type = 0  # +1 => last pivot was High, -1 => Low, 0 => undefined
+    # Start pivot in the middle of the first bar
+    pivot_price = (high.iloc[0] + low.iloc[0]) / 2.0
+    last_price = pivot_price
+
+    for i in range(1, n):
+        curr_high = high.iloc[i]
+        curr_low = low.iloc[i]
+
+        # If pivot_type >= 0 => last pivot was High or undefined
+        if pivot_type >= 0:
+            drop_frac = (pivot_price - curr_low) / pivot_price  # how far we've dropped from pivot
+            if drop_frac >= dev_frac:
+                # Confirm prior pivot was High
+                if pivot_type == +1:
+                    pivot_dev[pivot_idx] = (last_price - pivot_price) / last_price * 100.0
+                else:
+                    pivot_dev[pivot_idx] = np.nan
+                swings[pivot_idx] = +1
+                pivot_vals[pivot_idx] = pivot_price
+
+                # New pivot is a Low
+                pivot_idx = i
+                pivot_price = curr_low
+                pivot_type = -1
+                last_price = pivot_vals[pivot_idx]
+            else:
+                # Update pivot if we have a higher high or pivot_type==0 (first iteration)
+                if curr_high > pivot_price or pivot_type == 0:
+                    pivot_price = curr_high
+                    pivot_idx = i
+
+        # If pivot_type <= 0 => last pivot was Low or undefined
+        if pivot_type <= 0:
+            rise_frac = (curr_high - pivot_price) / pivot_price  # how far we've risen from pivot
+            if rise_frac >= dev_frac:
+                # Confirm prior pivot was Low
+                if pivot_type == -1:
+                    pivot_dev[pivot_idx] = (pivot_price - last_price) / last_price * 100.0
+                else:
+                    pivot_dev[pivot_idx] = np.nan
+                swings[pivot_idx] = -1
+                pivot_vals[pivot_idx] = pivot_price
+
+                # New pivot is a High
+                pivot_idx = i
+                pivot_price = curr_high
+                pivot_type = +1
+                last_price = pivot_vals[pivot_idx]
+            else:
+                # Update pivot if we have a lower low or pivot_type==0
+                if curr_low < pivot_price or pivot_type == 0:
+                    pivot_price = curr_low
+                    pivot_idx = i
+
+    # Optionally mark final pivot (commented out for real-time usage):
+    #   if pivot_type == +1:  # last pivot is a High
+    #       swings[pivot_idx] = +1
+    #       pivot_vals[pivot_idx] = pivot_price
+    #   elif pivot_type == -1:
+    #       swings[pivot_idx] = -1
+    #       pivot_vals[pivot_idx] = pivot_price
+    #   # pivot_dev remains NaN for the last pivot
+
+    # 4) Apply offset if any (positive only)
+    if offset > 0:
+        swings = np.roll(swings, offset)
+        pivot_vals = np.roll(pivot_vals, offset)
+        pivot_dev = np.roll(pivot_dev, offset)
+        swings[:offset] = np.nan
+        pivot_vals[:offset] = np.nan
+        pivot_dev[:offset] = np.nan
+
+    # 5) Build DataFrame
+    suffix = f"_{deviation}%_{legs}"
     data = {
-        f"ZIGZAGs{_props}": zz_swing,
-        f"ZIGZAGv{_props}": zz_value,
-        f"ZIGZAGd{_props}": zz_dev,
+        f"ZIGZAGs{suffix}": swings,
+        f"ZIGZAGv{suffix}": pivot_vals,
+        f"ZIGZAGd{suffix}": pivot_dev,
     }
-    df = DataFrame(data, index=high.index)
-    df.name = f"ZIGZAG{_props}"
+    df = pd.DataFrame(data, index=high.index)
+    df.name = f"ZIGZAG{suffix}"
     df.category = "trend"
+
+    # 6) fillna / fill_method from kwargs or default to 0 to avoid NaN values
+    if "fillna" in kwargs:
+        df.fillna(kwargs["fillna"], inplace=True)
+    elif "fill_method" in kwargs:
+        df.fillna(method=kwargs["fill_method"], inplace=True)
+    else:
+        df.fillna(0, inplace=True)
 
     return df

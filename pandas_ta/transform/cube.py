@@ -1,80 +1,122 @@
-# -*- coding: utf-8 -*-
-from numpy import isnan
+import numpy as np
+import pandas as pd
 from pandas import DataFrame, Series
 from pandas_ta._typing import DictLike, Int, IntFloat
-from pandas_ta.utils import v_int, v_lowerbound, v_offset, v_series
-
+from pandas_ta.utils import (
+    v_series, v_lowerbound, v_int, v_offset
+)
 
 
 def cube(
-    close: Series, pwr: IntFloat = None, signal_offset: Int = None,
-    offset: Int = None, **kwargs: DictLike
+    close: Series,
+    pwr: IntFloat = None,
+    signal_offset: Int = None,
+    offset: Int = None,
+    **kwargs: DictLike
 ) -> DataFrame:
     """
-    Indicator: Cube Transform
+    Cube Transform (non-leaking, scaled outputs)
 
     John Ehlers describes this indicator to be useful in compressing signals
     near zero for a normalized oscillator like the Inverse Fisher Transform.
-    In conjunction to that, values close to -1 and 1 are nearly unchanged,
-    whereas the ones near zero are reduced regarding their amplitude.
-
-    From the input data the effects of spectral dilation should have been
-    removed (i.e. roofing filter).
+    This version:
+      1) Disallows negative shifting (no future leakage).
+      2) Scales outputs to avoid extreme spikes.
 
     Sources:
-        Book: Cycle Analytics for Traders, 2014, written by John Ehlers
-            page 200
+        Book: Cycle Analytics for Traders, 2014, John Ehlers (p.200)
         Coded by rengel8 based on Markus K. (cryptocoinserver)'s source.
 
     Args:
-        close (pd.Series): Series of 'close's
-        pwr (float): Use this exponent 'wisely' to increase the impact of the
-            soft limiter. Default: 3
-        signal_offset (int): Offset the signal line. Default: -1
-        offset (int): How many periods to offset the result. Default: 0
+        close (pd.Series): Series of 'close' values.
+        pwr (float): The exponent. Default=3.0.
+        signal_offset (int): Additional shift for the signal line. Must be >= 0.
+                             Default=0 in practice, though old code used -1.
+        offset (int): Shift for the main output. Must be >= 0. Default=0.
 
     Kwargs:
-        fillna (value, optional): pd.DataFrame.fillna(value)
-
+        scale_minmax (int): The integer bound to clamp the output. Default=100.
+        rolling_window (int): Window for rolling max calculation. Default=100.
+        fillna (value, optional): pd.DataFrame.fillna(value).
+    
     Returns:
-        pd.DataFrame: New feature generated.
+        pd.DataFrame: Two columns:
+            - 'CUBE_{pwr}_{signal_offset}'
+            - 'CUBEs_{pwr}_{signal_offset}'
+        Both columns are integer-scaled transforms of 'close'**pwr.
     """
-    # Validate
+    # Validate input
     close = v_series(close)
+    if close is None or close.empty:
+        return
+
+    # Default parameter handling
+    if pwr is None:
+        pwr = 3.0
     pwr = v_lowerbound(pwr, 3.0, 3.0, strict=False)
-    signal_offset = v_int(signal_offset, -1, 0)
+
+    if signal_offset is None:
+        # Older code used -1 by default, which leaks. We set to 0 by default now.
+        signal_offset = 0
+    signal_offset = v_int(signal_offset, 0, 0)
+    if signal_offset < 0:
+        raise ValueError("cube(): Negative signal_offset not allowed (future leakage).")
+
+    if offset is None:
+        offset = 0
     offset = v_offset(offset)
+    if offset < 0:
+        raise ValueError("cube(): Negative offset not allowed (future leakage).")
 
-    # Calculate
-    result = close ** pwr
-    ct = Series(result, index=close.index)
-    ct_signal = Series(result, index=close.index)
+    # Additional kwargs for scaling
+    scale_minmax = kwargs.pop("scale_minmax", 100)
+    rolling_window = kwargs.pop("rolling_window", 100)
 
-    # Offset
-    if offset != 0:
+    # 1) Exponentiate
+    result = close**pwr  # uses current bar only
+
+    # 2) Rolling-based absolute max to avoid large outliers
+    #    - real-time safe (doesn't see future)
+    rolling_absmax = (
+        result.abs()
+              .rolling(window=rolling_window, min_periods=1)
+              .max()
+              .replace(0, np.nan)
+              .ffill()
+    )
+    rolling_absmax.fillna(1.0, inplace=True)  # avoid div-by-zero
+
+    # 3) Scale to ±scale_minmax & convert to int
+    scaled = (result / rolling_absmax) * scale_minmax
+    scaled_clamped = scaled.clip(-scale_minmax, scale_minmax).round().astype(int)
+
+    # Create main output and "signal" (same data, different shift)
+    ct = pd.Series(scaled_clamped, index=close.index)
+    ct_signal = ct.copy()
+
+    # 4) Shift if needed (no negative shift allowed)
+    if offset > 0:
         ct = ct.shift(offset)
         ct_signal = ct_signal.shift(offset)
-    if signal_offset != 0:
+    if signal_offset > 0:
         ct = ct.shift(signal_offset)
         ct_signal = ct_signal.shift(signal_offset)
 
-    if all(isnan(ct)) and all(isnan(ct_signal)):
-        return  # Emergency Break
-
-    # Fill
+    # 5) Fill NaNs
     if "fillna" in kwargs:
-        ct.fillna(kwargs["fillna"], inplace=True)
-        ct_signal.fillna(kwargs["fillna"], inplace=True)
+        fill_val = kwargs["fillna"]
+        ct.fillna(fill_val, inplace=True)
+        ct_signal.fillna(fill_val, inplace=True)
 
-    # Name and Category
+    # 6) Name columns & build DataFrame
     _props = f"_{pwr}_{signal_offset}"
     ct.name = f"CUBE{_props}"
     ct_signal.name = f"CUBEs{_props}"
-    ct.category = ct_signal.category = "transform"
+    ct.category = "transform"
+    ct_signal.category = "transform"
 
-    data = {ct.name: ct, ct_signal.name: ct_signal}
-    df = DataFrame(data, index=close.index)
+    df = pd.DataFrame({ct.name: ct, ct_signal.name: ct_signal}, index=close.index)
     df.name = f"CUBE{_props}"
-    df.category = ct.category
+    df.category = "transform"
 
     return df
